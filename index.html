@@ -14,16 +14,18 @@
     <script type="text/javascript">
         window.onload = function(e) {
             var mp4uri = "http://demo.castlabs.com/tmp/text0.mp4";
-            mp4layoutFct(mp4uri, function(err, boxes) {
+            mp4layoutFct(mp4uri, function(err, boxes, payload) {
                 if (err) {
                     console.log('error : ' + err);
                 } else {                    
                     boxes.text = "Successfully loaded file " + mp4uri + "\n";
-                    boxes.text += "\n";                                     
+                    boxes.text += "\n";
                     for (var i = 0; i < boxes.length; i++) {
                         boxes.text +=  "Found box of type " + boxes[i].name + " and size " + boxes[i].length + "\n";
                     }
                     boxes.text += "\n";
+                    boxes.text += "Content of mdat box is: " + payload;
+
                     document.querySelector('#out').innerHTML = boxes.text;
                 }
             });

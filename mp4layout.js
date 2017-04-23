@@ -33,25 +33,40 @@ var mp4layoutFct = function(mp4uri, cb) {
 
                 currBox.next = currBox.offset + 8;
                 // Read boxes with inner boxes
-                readBox(currBox.next, boxes, function(err, boxes) {
+                readBox(currBox.next, boxes, function(err, boxes, payload) {
                     if (err) {
                         cb(err);
                     } else {
-                        cb(null, boxes);
+                        cb(null, boxes, payload);
                     }
                 }); // end of readBox() call
             } else {
                 if (currBox.name == "mdat") {
 
-                   
-                    cb(null, boxes); // exit of readBox                      
+                    var rdDoneFct = function(err, buf) {
+                        if (err) {
+                            cb(err);       
+                        } else {
+                            var dv = new DataView(buf);
+                            var boxData = [];
+                            // Read in mdat box data, which is following the box code field
+                            for (var i = 8; i < dv.byteLength; i++) {
+                                boxData.push(String.fromCharCode(dv.getUint8(i)));
+                            }
+                            payload = boxData.join("");
+                            cb(null, boxes, payload); // exit of readBox
+                        }
+                    } // end of rdDoneFct
+
+                    // Read content of mdat box
+                    httpGetFct(mp4uri, currBox.length, currBox.offset, rdDoneFct );                           
                 } else {
                     // Read boxes without inner boxes
-                    readBox(currBox.offset + currBox.length, boxes, function(err, boxes) {
+                    readBox(currBox.offset + currBox.length, boxes, function(err, boxes, payload) {
                         if (err) {
                             cb(err);
                         } else {
-                            cb(null, boxes);
+                            cb(null, boxes, payload);
                         }
                     }); // end of readBox() call
                 }
@@ -82,13 +97,14 @@ var mp4layoutFct = function(mp4uri, cb) {
 
     // boxes stores each box found
     var boxes = [];
+    var payload;
 
     // Read first box
-    readBox(0, boxes, function(err, boxes) {
+    readBox(0, boxes, function(err, boxes, payload) {
         if (err) {
             cb("file can't be read", null);
         } else {
-            cb(null, boxes);
+            cb(null, boxes, payload);
         }
     }); // end of readBox() call
 }; // end of mp4layoutFct() definition
