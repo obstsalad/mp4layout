@@ -45,7 +45,12 @@ var mp4layoutFct = function(mp4uri, cb) {
 
                     var rdDoneFct = function(err, buf) {
                         if (err) {
-                            cb(err);       
+                            if (retry > 0) {
+                                retry--;
+                                httpGetFct(mp4uri, currBox.length, currBox.offset, rdDoneFct );
+                            } else {
+                                cb(err);       
+                            }
                         } else {
                             var dv = new DataView(buf);
                             var boxData = [];
@@ -58,6 +63,7 @@ var mp4layoutFct = function(mp4uri, cb) {
                         }
                     } // end of rdDoneFct
 
+                    var retry = 3; 
                     // Read content of mdat box
                     httpGetFct(mp4uri, currBox.length, currBox.offset, rdDoneFct );                           
                 } else {
