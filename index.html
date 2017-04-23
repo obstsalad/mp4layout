@@ -19,8 +19,11 @@
                     console.log('error : ' + err);
                 } else {                    
                     boxes.text = "Successfully loaded file " + mp4uri + "\n";
+                    boxes.text += "\n";                                     
+                    for (var i = 0; i < boxes.length; i++) {
+                        boxes.text +=  "Found box of type " + boxes[i].name + " and size " + boxes[i].length + "\n";
+                    }
                     boxes.text += "\n";
-                    
                     document.querySelector('#out').innerHTML = boxes.text;
                 }
             });
