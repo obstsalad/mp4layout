@@ -14,11 +14,14 @@
     <script type="text/javascript">
         window.onload = function(e) {
             var mp4uri = "http://demo.castlabs.com/tmp/text0.mp4";
-            mp4layoutFct(mp4uri, function(err, boxes, payload) {
+            mp4layoutFct(mp4uri, function(err, boxes) {
                 if (err) {
                     console.log('error : ' + err);
                 } else {                    
-                    console.log('success');
+                    boxes.text = "Successfully loaded file " + mp4uri + "\n";
+                    boxes.text += "\n";
+                    
+                    document.querySelector('#out').innerHTML = boxes.text;
                 }
             });
         }

@@ -23,7 +23,21 @@ var httpGetFct = function(mp4uri, length, offset, cb) {
 };
 
 var mp4layoutFct = function(mp4uri, cb) {  
-    console.log("mp4layout called");
+function readBox(offset, boxes, cb) {      
+        cb(null, boxes); // exit of readBox
+    }  // end of readBox() definition
+
+    // boxes stores each box found
+    var boxes = [];
+
+    // Read first box
+    readBox(0, boxes, function(err, boxes) {
+        if (err) {
+            cb("file can't be read", null);
+        } else {
+            cb(null, boxes);
+        }
+    }); // end of readBox() call
 }; // end of mp4layoutFct() definition
 
 
