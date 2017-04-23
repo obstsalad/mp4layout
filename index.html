@@ -10,11 +10,17 @@
     <center>
         <textarea id="out" rows="40" cols="120">Parsing layout of MP4 file ...</textarea>
     </center>
-
+    <script src="mp4layout.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript">
         window.onload = function(e) {
             var mp4uri = "http://demo.castlabs.com/tmp/text0.mp4";
-            console.log("MP4 URI: " + mp4uri);
+            mp4layoutFct(mp4uri, function(err, boxes, payload) {
+                if (err) {
+                    console.log('error : ' + err);
+                } else {                    
+                    console.log('success');
+                }
+            });
         }
     </script>
 </body>
