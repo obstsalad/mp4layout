@@ -5,6 +5,23 @@
  */
 "use strict";
 
+var httpGetFct = function(mp4uri, length, offset, cb) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState !== 4) return;
+        if (xhr.status !== 200 && xhr.status !== 206) {
+            return cb('HTTP response status (' + xhr.status + ') not ok');
+        }
+        cb(null, xhr.response, xhr);
+    };
+	
+    xhr.open("GET", mp4uri, true);
+    xhr.responseType = "arraybuffer"; 	
+    xhr.setRequestHeader('Range', 'bytes=' + offset + '-' + ( offset + length - 1 ) );
+	
+    xhr.send();
+};
+
 var mp4layoutFct = function(mp4uri, cb) {  
     console.log("mp4layout called");
 }; // end of mp4layoutFct() definition
